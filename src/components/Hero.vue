@@ -29,24 +29,21 @@
 <script>
     export default {
       name: "Hero",
-      props: {
-        msg: String
-      }
     };
-    </script>
+</script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->
-    <style scoped lang="scss">
-      .hero{
-        width: 100%;
-        padding-right: 15px;
-        padding-left: 15px;
-        margin-right: auto;
-        margin-left: auto;
-      }
-      .graphic img{
-        width: 100%;
-        height: auto;
-      }
-      
-    </style>
+<style scoped lang="scss">
+    .hero{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    }
+    .graphic img{
+    width: 100%;
+    height: auto;
+    }
+    
+</style>

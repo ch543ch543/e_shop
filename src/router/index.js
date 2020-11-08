@@ -107,11 +107,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  
   const requiresAuth = to.matched.some( x => x.meta.requiresAuth)
   const currentUser = fb.auth().currentUser 
-  
-  
   if (requiresAuth && !currentUser) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.

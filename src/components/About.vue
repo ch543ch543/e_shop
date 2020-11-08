@@ -19,40 +19,40 @@
                         <router-link to="/productview" class = "btn custom-btn btn-info" style="background-color:cadetblue; border-color: transparent;">Browse Products</router-link>
                     </div>
                 </div>
-            </div>
-        </div>
+          </div>
+      </div>
     </div>
     <Cart></Cart>
     </div>
-  </template>
+</template>
   
-  <script>
-    import Cart from "../components/Cart";
+<script>
+  import Cart from "../components/Cart";
+
+  export default {
+    name: "about",
+    props: {
+      msg: String
+    },
+    components: {
+      Cart
+    }
+  };
+</script>
   
-    export default {
-      name: "about",
-      props: {
-        msg: String
-      },
-      components: {
-        Cart
-      }
-    };
-    </script>
-    
-    <!-- Add "scoped" attribute to limit CSS to this component only -->
-    <style scoped lang="scss">
-      .about{
-        width: 100%;
-        padding-bottom: 5rem;
-        margin-right: auto;
-        margin-left: auto;
-      }
-      .graphic img{
-        width: 100%;
-        height: auto;
-      }
-      .col{
-        padding-top: 5px;
-      }
-    </style>
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+  .about{
+    width: 100%;
+    padding-bottom: 5rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .graphic img{
+    width: 100%;
+    height: auto;
+  }
+  .col{
+    padding-top: 5px;
+  }
+</style>

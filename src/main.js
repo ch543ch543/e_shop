@@ -3,8 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import {fb} from './firebase';
 import store from './Store.js'
-
-
 import "popper.js"; 
 import "bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,28 +11,23 @@ import 'jquery';
 import Swal from 'sweetalert2'
 import VueFirestore from 'vue-firestore';
 import VueRouter from 'vue-router'
+import Vue2Filters from 'vue2-filters'
+import VueCarousel from 'vue-carousel';
+import Vuex from 'vuex'
 
-Vue.use(VueRouter)
-
-
-require('firebase/firestore')
-
+require('firebase/firestore');
+Vue.use(VueCarousel);
+Vue.use(Vuex)
+Vue.use(VueFirestore);
+Vue.use(VueRouter);
+Vue.use(Vue2Filters);
 Vue.use(VueFirestore, {
   key: 'id',         // the name of the property. Default is '.key'.
   enumerable: true  //  whether it is enumerable or not. Default is true.
-})
-
-import Vue2Filters from 'vue2-filters'
-Vue.use(Vue2Filters)
-
+});
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
-
-Vue.use(VueFirestore);
-
-window.Swal = Swal;
-
 
 const Toast = Swal.mixin({
   toast: true,
@@ -47,22 +40,8 @@ const Toast = Swal.mixin({
     toast.addEventListener('mouseleave', Swal.resumeTimer)
   }
 })
-
-
 window.Toast = Toast;
-
-import VueCarousel from 'vue-carousel';
-Vue.use(VueCarousel);
-
-import Vuex from 'vuex'
-Vue.use(Vuex)
-
-
-Vue.component("Navbar", require('./components/Navbar.vue').default);
-Vue.component("Hero", require('./components/Hero.vue').default);
-Vue.component("ProductList", require('./components/ProductList.vue').default);
-Vue.component("AboutView", require('./views/AboutView.vue').default);
-Vue.component("AddToCart", require('./components/AddToCart.vue').default);
+window.Swal = Swal;
 
 let app = '';
 
@@ -76,8 +55,8 @@ fb.auth().onAuthStateChanged(function() {
   }
 });
 
+//金額格式
 Vue.filter('currency', function (num) {
   return 'NTD ' + num;
-  });
+}); 
 
-  window.checkout = null;

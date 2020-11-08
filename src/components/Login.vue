@@ -72,9 +72,6 @@ import $ from 'jquery';
 
 export default {
   name: "Login",
-  props: {
-    msg: String
-  },
   data(){
     return {
       name: null,
@@ -90,25 +87,21 @@ export default {
         
         $('#login').modal('hide');
         
+        //在使用者註冊時同時將資料儲存至firebase的資料庫
         db.collection("profiles").doc(user.user.uid).set({
           name: this.name,
           id: user.user.uid,
+        //一般註冊用戶在註冊時就會自動被設為使用者 
           role: "user",
-        });
-
-        db.collection("orders").doc(user.user.uid).set({
-          name: this.name,
-          id: user.user.uid,
         })
-
-
         .then(function() {
             console.log("Document successfully written!");
         })
         .catch(function(error) {
             console.error("Error writing document: ", error);
         });
-        this.$router.replace('admin').catch(e => {console.log(e)});
+        this.$router.replace('admin')
+        .catch(e => {console.log(e)});
       })
       .catch(function(error) {
       // Handle Errors here.

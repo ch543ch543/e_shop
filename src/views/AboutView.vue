@@ -11,15 +11,15 @@ import Navbar from '../components/Navbar'
 import About from '../components/About'
 import Cart from '../components/Cart'
 
-  export default {
-    name: "aboutview",
-    props: {
-      msg: String
-    },
-    components:{
-      Navbar, About, Cart
-    }
-  };
-  </script>
+export default {
+  name: "aboutview",
+  props: {
+    msg: String
+  },
+  components:{
+    Navbar, About, Cart
+  }
+};
+</script>
   
   

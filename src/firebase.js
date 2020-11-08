@@ -13,12 +13,12 @@ var firebaseConfig = {
     messagingSenderId: "234432297202",
     appId: "1:234432297202:web:07f72bdf86d04f8ddb786b",
     measurementId: "G-43S50WF5KX"
-  };
+};
   // Initialize Firebase
   
-  const fb = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const fb = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  export {fb,db}
+export {fb,db}
 
   

@@ -14,12 +14,13 @@ import Hero from "@/components/Hero.vue";
 import ProductList from "@/components/ProductList.vue";
 import Login from "@/components/Login.vue";
 import About from "@/components/About.vue";
+import Navbar from "@/components/Navbar.vue"
 
 
 export default {
   name: "Home",
   components: {
-    Hero, ProductList, Login, About
+    Hero, ProductList, Login, About, Navbar
   } 
 };
 </script>
@@ -27,8 +28,8 @@ export default {
   .graphic img{
       width: 100%;
       height: auto;
-    }
-    .col{
-      padding-top: 5px;
-    }
+  }
+  .col{
+    padding-top: 5px;
+  }
 </style>
