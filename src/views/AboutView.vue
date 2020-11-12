@@ -13,9 +13,6 @@ import Cart from '../components/Cart'
 
 export default {
   name: "aboutview",
-  props: {
-    msg: String
-  },
   components:{
     Navbar, About, Cart
   }

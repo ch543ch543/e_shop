@@ -30,6 +30,7 @@
 
 <script>
 import {db} from '../firebase';
+import AddToCart from './AddToCart.vue'
 
 export default {
   name: "Products-list",
@@ -37,6 +38,7 @@ export default {
     msg: String
   },
   components:{
+    AddToCart
   },
   data(){
     return {
@@ -45,7 +47,7 @@ export default {
     }
   },
   methods:{
-    getImage(images){
+  getImage(images){
       return images[0]; 
     }
   },

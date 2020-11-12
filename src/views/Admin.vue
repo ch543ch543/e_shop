@@ -20,7 +20,7 @@
             </div>
             <div class="user-info">
               <span class="user-email">{{email}}</span>
-              <span class="admin" style="color:cadetblue; font-weight: bold;  text-align: left;" >ADMIN</span>
+              <span class="admin" style="color:cadetblue; font-weight: bold;  text-align: left;" >USER</span>
               <span class="user-status">
                 <i class="fa fa-circle" style="text-align: left;"></i>
                 <span style="text-align: left;">Online</span>
@@ -69,22 +69,17 @@
       </nav>
       <!-- sidebar-content  -->
       <main class = "page-content">
-          <router-view/>
-      </main>
-      <!-- page-content  -->
-      <main class="page-content pt-2">
-          <div id="overlay" class="overlay"></div>
-          <div class="container-fluid p-5"></div>
+         <!-- 路由組件渲染到這裡 -->
+          <router-view/> 
       </main>
     </div>
-    <router-view></router-view>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import $ from 'jquery';
-import {fb, db} from '../firebase';
+import {fb} from '../firebase';
 
 export default {
   name: "Admin",
@@ -101,9 +96,10 @@ export default {
       $(".page-wrapper").toggleClass("toggled")
     },
     logout() {
+      this.$router.replace('/')
       fb.auth().signOut()
       .then(() => {
-        this.$router.replace('/');
+        this.$router.replace('');
       })
       .catch((error) => {
         console.log(error);
@@ -114,28 +110,6 @@ export default {
     var user = fb.auth().currentUser;
     this.email = user.email;
     this.photoURL = user.photoURL;
-    var docRef = db.collection("profiles").doc(user.uid);
-    docRef.get()
-    .then(function(doc) {
-      if (doc.exists) {
-        console.log("Document data:", doc.data().role);
-        var role = doc.data().role;
-        return role;
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }})
-    .then( (role) => {
-      if(role != 'user'){
-        this.$router.replace('/adminforadmin')
-      } else {
-        this.$router.replace('/admin')
-      }
-    })
-    .catch(function(error) {
-      console.log("Error getting document:", error);
-    });
-    console.log(window.checkout);
   }
 } 
 </script>

@@ -15,8 +15,8 @@
               <router-link  class="nav-link" to="/productsview" href="#">Products</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin" v-if = " login != null " >Member center</a>
-            <a class="nav-link" data-toggle="modal" data-target="#login" v-if = " login === null" >Member center</a>
+            <a class="nav-link" @click = 'Membercenter'>Member center</a>
+           
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -34,7 +34,8 @@
 <script>
 import {fb, db} from '../firebase';
 import Login from "../components/Login.vue";
-// import $ from 'jquery';
+import $ from 'jquery'
+
 
 export default {
   name: "Navbar",
@@ -46,14 +47,14 @@ export default {
   },
   data(){
     return{
-      login: fb.auth().currentUser
+      login: fb.auth().currentUser //若沒有currentuser則會返回null
     }
   },
   methods: {
     logout() {
       fb.auth().signOut()
+      this.$store.commit('logoutuser')
       .then(() => {
-          this.$router.replace('/');
           window.Toast.fire({
           type: 'success',
           title: "You're logged out!"
@@ -64,35 +65,34 @@ export default {
       });
     },
     Membercenter() {
-      console.log(fb.auth().currentUser);
       if(fb.auth().currentUser){
-        var user = fb.auth().currentUser;
-        var docRef = db.collection("profiles").doc(user.uid);
-        docRef.get().then(function(doc) {
-        if (doc.exists) {
-          console.log("Document data:", doc.data().role);
-          var role = doc.data().role;
-          return role;
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-        }).then( (role) => {
-            if(role != 'user'){
-                this.$router.replace('/adminforadmin')
-            } else {
-              this.$router.replace('/admin')
-            }
-        })
-        .catch(function(error) {
-        console.log("Error getting document:", error);
-        });
-      } else if (fb.auth().currentUser == null){
-        window.Swal.fire({
-        icon: 'error',
-        title: 'Wrong password!'
-        })
+        this.gotoadmin();
+      } else if (fb.auth().currentUser === null){
+        $('#login').modal('show');
       };
+    },
+    gotoadmin() {
+      let user = fb.auth().currentUser; 
+      let docRef = db.collection("profiles").doc(user.uid);
+      docRef.get()
+      .then((doc) => {
+      if (doc.exists) {
+        let role = doc.data().role;
+        console.log(role)
+        return role;
+      } else {
+        console.log("No such document!");
+      }})
+      .then((role) => {
+      if(role != 'user'){
+        this.$router.replace('/adminforadmin')
+      } else {
+        this.$router.replace('/admin')
+      }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
     }
   }  
 }

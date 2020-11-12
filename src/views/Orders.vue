@@ -17,7 +17,7 @@
               </tr>
           </thead>
           <tbody>
-              <tr v-for='(item, index) in this.$store.state.cart' :key='index'>
+              <tr v-for='(item, index) in this.$store.state.order' :key='index'>
                 <th>
                   <img :src="item.productImage" width="80px" class="align-self-center mr-3" alt=""> 
                 </th>
@@ -28,7 +28,7 @@
               </tr>  
               <tr>
                 <td colspan="4" style="text-align:left">Price of the order</td>
-                <td colspan="1">{{ this.$store.getters.totalPrice  | currency}}</td>
+                <td colspan="1">{{ this.$store.state.orderprice  | currency}}</td>
               </tr>
           </tbody>
         </table>
@@ -40,16 +40,10 @@
 <script>
 export default {
   name: "orders",
-  props: {
-    msg: String
-  },
   data() {
     return{
       checkout: window.checkout
     }
-  },
-  created() {
-    console.log(window.checkout)
   }
 };
 </script>

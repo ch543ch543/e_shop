@@ -17,7 +17,7 @@
               <h5 class = "text-left" >{{item.productName}}
                 <span class="float-right myMOUSE" @click="$store.commit('removeFromCart', item)">X</span>
               </h5>
-              <h5 class = "text-left">{{item.productPrice}}</h5>
+              <h5 class = "text-left">{{item.productPrice | currency}}</h5>
               <h5 class = "text-left">Quantity: {{item.productQuantity}}</h5>
           </div>
           </div>

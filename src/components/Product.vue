@@ -13,9 +13,8 @@
             <div class="card-body d-flex flex-column">
               <h5 class="card-title ">{{ product.name}}</h5>
               <h5 class="card-prices ">{{ product.price | currency}}</h5>
-              <a class='btn btn-light mx-auto' @click="info(product)">More information</a> 
+              <a class='btn btn-light mx-auto' @click = 'info(product)'>More information</a>
             </div>
-              <Iteminfo :product="product"></Iteminfo>
               <AddToCart
                 :image="getImage(product.images)"
                 :id="product.id"
@@ -26,24 +25,47 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="itemInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-left" id="exampleModalLabel">{{ product.name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <carousel id = "info" :perPage="1" >
+              <slide v-for="(image, index) in product.images" :key="index">
+                <img :src="image"  alt="..." width="250px">
+              </slide>
+            </carousel>
+            <h5 class="text-left" style="font-weight: 800">Price:</h5>
+            <h5 class="text-left mb-5">{{ product.price | currency }}</h5>
+            <h5 class="card-description text-left" v-html = "product.description">Description of the item</h5>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
   
 <script>
 import {db} from '../firebase';
-import $ from 'jquery'
-import Iteminfo from './Iteminfo.vue'
+import $ from 'jquery';
+
+
 import AddToCart from './AddToCart.vue'
 
 export default {
   name: "product",
   components:{
-    Iteminfo, AddToCart
+    AddToCart
   },
   data(){
     return {
         products: [],
-        currentProduct: ''
+        product: {},
     }
   },
   methods:{
@@ -51,18 +73,14 @@ export default {
         return images[0]; 
     },
     info(product){
-          this.currentProduct = product
-          console.log(product);
-          $('#itemInfo').modal('show')
+      $('#itemInfo').modal('show');
+      this.product = product;
     }
   },
   firestore(){
     return {
       products: db.collection('products'),
     }
-  },
-  created() {
-    console.log(this.products)
   }
 };
 </script>

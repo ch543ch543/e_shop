@@ -25,7 +25,7 @@
               </td>
               <td>
                 <button class="btn btn-secondary" @click = "editProduct(product)" >edit</button>
-                <button class="btn btn-primary" @click = "deleteProduct(product.id)" style="background-color:cadetblue; border-color: transparent; margin-left: 10px;">delete</button>
+                <button class="btn btn-primary" @click = "deleteProduct(product)" style="background-color:cadetblue; border-color: transparent; margin-left: 10px;">delete</button>
               </td>
             </tr>
           </tbody>
@@ -44,7 +44,7 @@
             <div class="modal-body row">
               <div class="modal-left col-md-8">
                 <div class = "form-group">
-                  <input type = "text" placeholder = "Product Name" class = "form-control height:auto" v-model = "product.name">
+                  <input type = "text" placeholder = "Product Name" class = "form-control height:auto" v-model = "product.name">   <!-- 用v-model資料綁定顯示商品資料 -->
                 </div>
                 <div class = "form-group">
                   <vue-editor v-model = "product.description"></vue-editor>
@@ -94,6 +94,13 @@
 import {fb,db} from '../firebase';
 import $ from 'jquery';
 import { VueEditor } from "vue2-editor";
+import Vue from "vue";
+import VueFirestore from 'vue-firestore';
+require('firebase/firestore');
+Vue.use(VueFirestore, { // 為了firebase update()的設置
+  key: 'id',         // the name of the property. Default is '.key'.
+  enumerable: true  //  whether it is enumerable or not. Default is true.
+});
   
 export default {
   name: "addnewproduct",
@@ -106,6 +113,7 @@ export default {
       product: {
         name: null,
         description: null,
+        id: null,
         price: null,
         images: [],
         tags: []
@@ -124,7 +132,7 @@ export default {
   },
   methods:{
     deleteImage(img, index){
-      let image = fb.storage().refFromURL(img);
+      let image = fb.storage().refFromURL(img); //img為圖片的url
       this.product.images.splice(index,1);
       image.delete().then(() => {
         console.log('image delete');
@@ -134,10 +142,10 @@ export default {
     },
     uploadImage(e){
       if(e.target.files[0]){
-        let file = e.target.files[0];
-        var storageRef = fb.storage().ref('products/'+file.name);
-        let uploadTask = storageRef.put(file);
-        uploadTask.on('state_changed', () => {
+        let file = e.target.files[0]; //取得該檔案的 Blob 物件（表示一個不可變、原始資料的類檔案物件）
+        let storageRef = fb.storage().ref('products/'+file.name); //建立文件在firebase storage的路徑
+        let uploadTask = storageRef.put(file); //將Blob物件上傳到cloud storage
+        uploadTask.on('state_changed', () => { //監聽state的改變、error以及完成上傳
         }, (error) => {
         console.log(error);
         }, () => {
@@ -171,8 +179,8 @@ export default {
     },
     updateProduct(){
       $('#product').modal('hide');
+      console.log(this.products)
       this.$firestore.products.doc(this.product.id).update(this.product);
-      console.log(this.product.id);
       window.Toast.fire({
         type: 'success',
         title: 'Updated it successfully'
@@ -182,9 +190,8 @@ export default {
       this.modal = 'edit'
       this.product = product;
       $('#product').modal('show');
-      console.log(this.modal); 
     },
-    deleteProduct(doc){
+    deleteProduct(doc){ 
       window.Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -196,7 +203,7 @@ export default {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          this.$firestore.products.doc(doc).delete();
+          this.$firestore.products.doc(doc.id).delete(); ////doc為product id
           window.Toast.fire({
           icon: 'success',
           title: 'Deleted successfully'
@@ -205,11 +212,9 @@ export default {
       })
     },
     addProduct(){
-      this.$firestore.products.add(this.product);
-      this.product.tags.push(this.tag);
+      db.collection("products").add(this.product); //將要上傳的商品先儲存在data後一次上傳至firebase
       $('#product').modal('hide');
       window.Toast.fire({
-        type: 'success',
         title: 'Added it successfully'
       });
     }

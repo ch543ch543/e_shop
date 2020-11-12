@@ -35,14 +35,8 @@ const routes = [
     path: "/admin",
     name: "admin",
     component: Admin,
-    redirect: '/admin/orders',
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true }, //有登入的人才能進入會員中心
     children: [
-      {
-        path: "addnewproduct",
-        name: "addnewproduct",
-        component: Addnewproduct
-      },
       {
         path: "profiles",
         name: "profiles",
@@ -72,15 +66,10 @@ const routes = [
         component: Addnewproduct
       },
       {
-        path: "profiles",
-        name: "profiles",
+        path: "profile",
+        name: "profile",
         component: Profiles
       },
-      {
-        path: "checkout",
-        name: "checkout",
-        component: Checkout
-      }
     ]
   },
   {

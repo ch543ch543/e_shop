@@ -49,13 +49,13 @@
                         </div>
                         <div class="form-row my-3">
                             <div class="form-group col-5">
-                                <input type="file"  class="form-control" placeholder="profile picture" @change="uploadImage"> 
+                                <input type="file"  class="form-control" placeholder="profile picture" @change="uploadImage">  <!-- 當用戶更改<input>、<select>和<textarea> 元素並提交更改時，change事件在這個元素上觸發 -->
                                 <label for="">for your profile picture</label>
                             </div>  
                             <div class = "form-group col-1" >               
                                 <div class = "img-wrap">
                                     <img :src="account.photoURL" alt="" width="80px">
-                                    <span class = "btn delete-img" @click = "deleteImage(image,index)" style="background-color:transparent; font-size: small; padding-left: 5px;">X</span>
+                                    <span v-if="account.photoURL" class = "btn delete-img" @click = "deleteImage" style="background-color:transparent; font-size: small; padding-left: 5px;">X</span>
                                 </div>                               
                             </div>
                             <div class="form-group col-6">
@@ -103,9 +103,9 @@ firestore(){
     }
 },
 methods: {
-    deleteImage(img, index){
-        let image = fb.storage().refFromURL(img);
-        this.acount.photoURL.splice(index,1);
+    deleteImage(){
+        let image = fb.storage().refFromURL(this.account.photoURL);
+        this.account.photoURL = null;
         image.delete().then(() => {
         console.log('image delete');
         }).catch(() => {
@@ -161,19 +161,18 @@ methods: {
         if(e.target.files[0]){
             let file = e.target.files[0];
             var storageRef = fb.storage().ref('profiles/'+file.name);
-            console.log(storageRef)
             let uploadTask = storageRef.put(file);
             uploadTask.on('state_changed', () => {
-                }, (error) => {
-                    console.log(error);
+            }, (error) => {
+                console.log(error);
                 },() => {
                 // Handle successful uploads on complete
                     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                    uploadTask.snapshot.ref.getDownloadURL()
-                    .then((downloadURL) => {
-                        this.account.photoURL = downloadURL;
-                        console.log('File available at', downloadURL);
-                    });
+                uploadTask.snapshot.ref.getDownloadURL()
+                .then((downloadURL) => {
+                    this.account.photoURL = downloadURL;
+                    console.log('File available at', downloadURL);
+                });
                 }
             );
         }
@@ -182,6 +181,7 @@ methods: {
 created(){
     const user = fb.auth().currentUser;
     this.account.photoURL = user.photoURL;
+    this.account.email = user.email;
 }
 };
 </script>

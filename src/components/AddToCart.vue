@@ -31,7 +31,6 @@
         addToCart(){
             $('#miniCart').modal('show');
             this.$store.commit('addToCart', this.item)
-            console.log(this.productImage)
         }
     },
     components: {

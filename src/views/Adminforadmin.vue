@@ -34,7 +34,7 @@
                   <span>Menu</span>
               </li>
               <li>
-                <router-link to = "/adminforadmin/profiles">
+                <router-link to = "/adminforadmin/profile">
                   <i class="fa fa-book"></i>
                   <span class="menu-text">Profiles</span>
                 </router-link> 
@@ -61,14 +61,9 @@
           </div>
         </div>
       </nav>
-      <!-- sidebar-content  -->
+      <!-- sidebar開啟的網頁主要content  -->
       <main class = "page-content">
-          <router-view/>
-      </main>
-      <!-- page-content  -->
-      <main class="page-content pt-2">
-          <div id="overlay" class="overlay"></div>
-          <div class="container-fluid p-5"></div>
+        <router-view/>
       </main>
     </div>
   </div>
@@ -94,9 +89,10 @@ export default {
       $(".page-wrapper").toggleClass("toggled")
     },
     logout() {
+      this.$router.replace('/')
       fb.auth().signOut()
       .then(() => {
-          this.$router.replace('/');
+          this.$router.replace('');
       })
       .catch((error) => {
           console.log(error);

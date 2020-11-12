@@ -1,6 +1,6 @@
 import firebase from 'firebase';
-require("firebase/firestore");
 import 'firebase/storage';
+require("firebase/firestore");
 
 
 // Your web app's Firebase configuration

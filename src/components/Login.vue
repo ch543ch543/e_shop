@@ -23,12 +23,12 @@
                 <div class="login-input text-left mx-3 my-2">
                     <div class="form-group">
                       <label for="exampleInputEmail1" >Email address</label>
-                      <input type="email" v-model="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                      <input type="email" v-model="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+                      <small class="form-text text-muted">We'll never share your email with anyone else.</small>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputPassword1" >Password</label>
-                      <input type="password" @keyup.enter = "login" v-model="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      <input type="password" @keyup.enter = "login" v-model="password" class="form-control" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-primary" @click = 'login' style="background-color: cadetblue; border-color:transparent ; color:rgb(5, 28, 34);">Login</button>
                 </div>
@@ -41,17 +41,17 @@
 
                     <div class="form-group">
                       <label for="name">Your name</label>
-                      <input type="text" v-model="name" class="form-control" id="name" placeholder="Your beautiful name">
+                      <input type="text" v-model="name" class="form-control" placeholder="Your beautiful name">
                     </div>
 
                     <div class="form-group">
                       <label for="email">Email address</label>
-                      <input type="email" v-model="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                      <input type="email" v-model="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
                     </div>
 
                     <div class="form-group">
                       <label for="password">Password</label>
-                      <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
+                      <input type="password" v-model="password" class="form-control" placeholder="Password">
                     </div>
 
                     <button class="btn btn-primary" @click = "register" style="background-color: cadetblue; border-color:transparent; color:rgb(5, 28, 34);">Signup</button>
@@ -84,15 +84,13 @@ export default {
     register(){
       fb.auth().createUserWithEmailAndPassword(this.email, this.password)
       .then((user) => { 
-        
         $('#login').modal('hide');
-        
-        //在使用者註冊時同時將資料儲存至firebase的資料庫
-        db.collection("profiles").doc(user.user.uid).set({
+        this.$store.commit('getcurrentuser', user.user.uid);
+        this.gotoadmin(user.user.uid);//判斷登入者是一般使用者還是管理者，並傳送至相對應會員畫面
+        db.collection("profiles").doc(user.user.uid).set({ //在使用者註冊時同時將資料儲存至firebase的database
           name: this.name,
-          id: user.user.uid,
-        //一般註冊用戶在註冊時就會自動被設為使用者 
-          role: "user",
+          id: user.user.uid, 
+          role: "user", //一般註冊用戶在註冊時就會自動被設為使用者
         })
         .then(function() {
             console.log("Document successfully written!");
@@ -105,23 +103,23 @@ export default {
       })
       .catch(function(error) {
       // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      if (errorCode == 'auth/weak-password') {
-        alert('The password is too weak.');
-      } else {
-        alert(errorMessage);
-      }
-      console.log(error);
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+        } else {
+          alert(errorMessage);
+        } 
+        console.log(error);
       });
     },
 
     login(){
-
       fb.auth().signInWithEmailAndPassword(this.email, this.password)
-      .then(() => { 
-        this.$router.replace('admin');
+      .then((user) => { 
         $('#login').modal('hide');
+        this.$store.commit('getcurrentuser', user.user.uid); //儲存現登入使用者至localstorage
+        this.gotoadmin(user.user.uid); //判斷登入者是一般使用者還是管理者，並傳送至相對應會員畫面
       })
       .catch(function(error) {
       // Handle Errors here.
@@ -141,7 +139,29 @@ export default {
       }
       console.log(error);
       });
-
+      
+    },
+    
+    gotoadmin(user) { //從firebase的db得到當前登入者的身份並應相應地傳送到相應的使用者或管理者的會員中心
+      let docRef = db.collection("profiles").doc(user);
+      docRef.get()
+      .then((doc) => {
+      if (doc.exists) {
+        var role = doc.data().role;
+        return role;
+      } else {
+        console.log("No such document!");
+      }})
+      .then((role) => {
+      if(role != 'user'){
+        this.$router.replace('/adminforadmin')
+      } else {
+        this.$router.replace('/admin')
+      }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
     }
   }  
 };

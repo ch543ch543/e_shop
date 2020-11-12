@@ -14,17 +14,14 @@ import VueRouter from 'vue-router'
 import Vue2Filters from 'vue2-filters'
 import VueCarousel from 'vue-carousel';
 import Vuex from 'vuex'
-
 require('firebase/firestore');
+
 Vue.use(VueCarousel);
 Vue.use(Vuex)
 Vue.use(VueFirestore);
 Vue.use(VueRouter);
 Vue.use(Vue2Filters);
-Vue.use(VueFirestore, {
-  key: 'id',         // the name of the property. Default is '.key'.
-  enumerable: true  //  whether it is enumerable or not. Default is true.
-});
+
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
@@ -59,4 +56,10 @@ fb.auth().onAuthStateChanged(function() {
 Vue.filter('currency', function (num) {
   return 'NTD ' + num;
 }); 
+
+const originalPush = VueRouter.prototype.push
+   VueRouter.prototype.push = function push(location) {
+   return originalPush.call(this, location).catch(err => err)
+}
+
 
